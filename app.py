@@ -164,34 +164,49 @@ def upload_plot(df):
     if plot_df.empty:
         return
 
-    precip = pd.to_numeric(plot_df["precipitation"], errors="coerce").fillna(0)
-    precip = precip.clip(lower=0)
+    plot_df["temperature_2m"] = pd.to_numeric(plot_df["temperature_2m"], errors="coerce")
+    plot_df["wind_speed_10m"] = pd.to_numeric(plot_df["wind_speed_10m"], errors="coerce")
+    plot_df = plot_df.dropna(subset=["temperature_2m", "wind_speed_10m"])
 
-    temp = pd.to_numeric(plot_df["temperature_2m"], errors="coerce")
-    plot_df = plot_df.assign(temperature_2m=temp, precipitation=precip)
-    plot_df = plot_df.dropna(subset=["temperature_2m"])
+    if plot_df.empty:
+        return
+
+    import matplotlib.dates as mdates
 
     plt.figure(figsize=(12, 6))
+    ax1 = plt.gca()
 
-    plt.plot(
+    ax1.plot(
         plot_df["timestamp"],
         plot_df["temperature_2m"],
         marker="o",
-        label="Temperature (°F)"
+        label="Temperature (°C)"
     )
+    ax1.set_ylabel("Temperature (°C)")
 
-    plt.bar(
-        plot_df["timestamp"],
-        plot_df["precipitation"],
-        alpha=0.3,
-        label="Precipitation (mm)"
+    ax2 = ax1.twinx()
+    ax2.plot(
+        plot_df["timesta"],
+        plot_df["wind_speed_10m"],
+        linestyle="--",
+        marker="o",
+        label="Wind Speed (m/s)"
     )
+    ax2.set_ylabel("Wind Speed (m/s)")
 
     plt.title(f"{CITY} Weather")
     plt.xlabel("Time")
-    plt.ylabel("Value")
-    plt.xticks(rotation=45)
-    plt.legend()
+
+    ax1.xaxis.set_major_locator(mdates.HourLocator(interval=2))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter("%m-%d %H:%M"))
+    plt.xticks(rotation=45, ha="right")
+
+    ax1.grid(alpha=0.3)
+
+    lines_1, labels_1 = ax1.get_legend_handles_labels()
+    lines_2, labels_2 = ax2.get_legend_handles_labels()
+    plt.legend(lines_1 + lines_2, labels_1 + labels_2)
+
     plt.tight_layout()
 
     img_buffer = io.BytesIO()
