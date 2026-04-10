@@ -1,7 +1,3 @@
-# Weather Pipeline
-
-A simple end-to-end data pipeline that collects hourly weather data, stores it in AWS, and visualizes trends over time.
-
 ## Overview
 
 This project pulls Charlottesville weather data, stores it in DynamoDB, and generates a continuously updating plot saved to S3. It runs automatically on a schedule using Kubernetes CronJobs.
@@ -40,6 +36,10 @@ Each pipeline run appends one row to DynamoDB with the following fields:
 | `wind_speed_10m`     | Float  | Wind speed in miles per second (m/s).                                       |
 
 The generated visualization is a time-series plot spanning a 72-hour period, showing both temperature and wind speed trends in Charlottesville. Temperature is shown as a continuous line, revealing clear daily cycles with cooler early mornings and warmer afternoon peaks, while wind speed is overlaid as a secondary dotted line, highlighting more irregular fluctuations and short-term variability. Together, the plot provides a comparative view of how these two weather variables evolve over time.
+
+Over the 72-hour window, Charlottesville's weather follows a clear and consistent daily rhythm. Temperatures climb quickly after sunrise, with the morning warm-up being sharp, then ease off more gradually into the evening. On top of this daily cycle, there is a broader warming trend across all three days, pointing to a seasonal shift rather than just normal variation.
+
+Wind speed is noisier, spiking and dropping with less obvious pattern. However, wind speed tends to be highest during the warmest parts of the day. After some research, I learned that this reflects daytime convective mixing. As the surface heats up, it stirs the lower atmosphere and pulls stronger winds downward. The most striking observation is how stable the daily cycle itself is. The peak temperatures change day to day, but the shape of each day stays almost identical. Weather in Charlottesville can be very erratic during the spring months, so I was surprised to see this level of consistency. 
 
 ## Tech Stack
 
