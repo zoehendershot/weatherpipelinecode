@@ -15,9 +15,13 @@ Weather data is sourced from the Open-Meteo API, a free, open-source weather API
 The pipeline runs as a Kubernetes CronJob every 15 minutes and executes the following steps:
 
 Fetch: A Python script calls the Open-Meteo API for the current hour's weather observations at the Charlottesville coordinates.
+
 Transform: The raw JSON response is parsed and flattened into a structured record with a UTC timestamp as the unique identifier.
+
 Store: The record is written to a DynamoDB table (weather-data), using the timestamp as the partition key to prevent duplicate entries on re-runs.
+
 Visualize: All records from the past 3 days are queried from DynamoDB, loaded into a pandas DataFrame, and used to render a time-series plot.
+
 Upload: The data and plot(saved as a PNG) are uploaded to a designated S3 bucket and continuously update to reflect new incoming data.
 
 ## Data Dictionary
