@@ -180,16 +180,18 @@ def upload_plot(df):
         plot_df["timestamp"],
         plot_df["temperature_2m"],
         marker="o",
+	color="tab:blue",
         label="Temperature (°C)"
     )
     ax1.set_ylabel("Temperature (°C)")
 
     ax2 = ax1.twinx()
     ax2.plot(
-        plot_df["timesta"],
+        plot_df["timestamp"],
         plot_df["wind_speed_10m"],
         linestyle="--",
         marker="o",
+	color="tab:orange",
         label="Wind Speed (m/s)"
     )
     ax2.set_ylabel("Wind Speed (m/s)")
@@ -197,8 +199,8 @@ def upload_plot(df):
     plt.title(f"{CITY} Weather")
     plt.xlabel("Time")
 
-    ax1.xaxis.set_major_locator(mdates.HourLocator(interval=2))
-    ax1.xaxis.set_major_formatter(mdates.DateFormatter("%m-%d %H:%M"))
+    ax1.xaxis.set_major_locator(mdates.HourLocator(interval=8))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter("%m-%d\n%H:%M"))
     plt.xticks(rotation=45, ha="right")
 
     ax1.grid(alpha=0.3)
